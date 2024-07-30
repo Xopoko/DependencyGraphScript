@@ -19,7 +19,7 @@ A command-line tool for generating a dependency graph for Swift Package Manager 
 1. Clone the repository:
 
     ```sh
-    git clone <repository-url>
+    git clone https://github.com/Xopoko/DependencyGraphScript
     cd DependencyGraphScript
     ```
 
