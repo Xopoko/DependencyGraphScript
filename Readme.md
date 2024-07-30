@@ -35,6 +35,7 @@ Run the script with the desired options:
 
 ```sh
 swift run dependency_graph --output <output-filename> --project-color <project-color> --local-color <local-color> --remote-color <remote-color> --path <directory-path>
+```
 
 ### Options
 
