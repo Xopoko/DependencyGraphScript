@@ -24,6 +24,9 @@ struct GenerateDependencyGraph: ParsableCommand {
     @Option(name: .long, help: "Path to the directory to scan for Package.swift files.")
     var path: String = "."
 
+    @Flag(name: .long, help: "Create .dot file along with the PNG image.")
+    var createDot: Bool = false
+
     /**
      Main execution function for the command.
      Scans the specified path for Package.swift files, extracts dependencies, and generates a Graphviz DOT file and PNG image.
@@ -46,13 +49,18 @@ struct GenerateDependencyGraph: ParsableCommand {
 
         // Write the DOT file and generate the PNG image using Graphviz
         do {
-            try dot.write(toFile: dotFilePath, atomically: true, encoding: .utf8)
+            if createDot {
+                try dot.write(toFile: dotFilePath, atomically: true, encoding: .utf8)
+            }
             let process = Process()
             process.launchPath = "/usr/bin/env"
             process.arguments = ["dot", "-Tpng", dotFilePath, "-o", "\(output).png"]
             process.launch()
             process.waitUntilExit()
             print("Dependency graph created: \(output).png")
+            if createDot {
+                print("DOT file created: \(dotFilePath)")
+            }
         } catch {
             print("Error writing file or creating graph: \(error)")
         }
