@@ -126,13 +126,13 @@ func createDependencyGraph(dependencies: [String: ([String], [(String, String)])
     dot += "    edge [color=gray, fontsize=10, fontcolor=black];\n"
 
     for (project, (remoteDeps, localDeps)) in dependencies {
-        dot += "    \"\(project)\" [color=\(projectColor)];\n"
+        dot += "    \"\(project)\" [color=\"\(projectColor)\"];\n"
         for dep in remoteDeps {
-            dot += "    \"\(dep)\" [color=\(remoteColor)];\n"
+            dot += "    \"\(dep)\" [color=\"\(remoteColor)\"];\n"
             dot += "    \"\(project)\" -> \"\(dep)\";\n"
         }
         for (dep, _) in localDeps {
-            dot += "    \"\(dep)\" [color=\(localColor)];\n"
+            dot += "    \"\(dep)\" [color=\"\(localColor)\"];\n"
             dot += "    \"\(project)\" -> \"\(dep)\";\n"
         }
     }
