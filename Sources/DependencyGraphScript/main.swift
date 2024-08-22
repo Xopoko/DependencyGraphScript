@@ -23,7 +23,7 @@ struct GenerateDependencyGraph: ParsableCommand {
 
     @Option(name: .long, help: "Path to the directory to scan for Package.swift files.")
     var path: String = "."
-    
+
     /**
      Main execution function for the command.
      Scans the specified path for Package.swift files, extracts dependencies, and generates a Graphviz DOT file and PNG image.
@@ -126,7 +126,7 @@ func findPackageFiles(at path: String) -> [String] {
  */
 func createDependencyGraph(dependencies: [String: ([String], [(String, String)])], projectColor: String, localColor: String, remoteColor: String) -> String {
     var dot = "digraph dependencies {\n"
-    dot += "    graph [rankdir=LR, splines=polyline, nodesep=1.0, ranksep=1.0];\n"
+    dot += "    graph [rankdir=LR, splines=polyline, nodesep=0.5, ranksep=0.5];\n"
     dot += "    node [shape=box, style=filled, fontsize=12, fontcolor=black, width=2.0, height=1.0];\n"
     dot += "    edge [color=gray, fontsize=10, fontcolor=black];\n"
 
