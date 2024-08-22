@@ -23,10 +23,7 @@ struct GenerateDependencyGraph: ParsableCommand {
 
     @Option(name: .long, help: "Path to the directory to scan for Package.swift files.")
     var path: String = "."
-
-    @Flag(name: .long, help: "Create .dot file along with the PNG image.")
-    var createDot: Bool = false
-
+    
     /**
      Main execution function for the command.
      Scans the specified path for Package.swift files, extracts dependencies, and generates a Graphviz DOT file and PNG image.
@@ -47,19 +44,23 @@ struct GenerateDependencyGraph: ParsableCommand {
         let dot = createDependencyGraph(dependencies: dependencies, projectColor: projectColor, localColor: localColor, remoteColor: remoteColor)
         let dotFilePath = "\(output).dot"
 
-        // Write the DOT file and generate the PNG image using Graphviz
+        // Write the DOT file and check if it was created
         do {
-            if createDot {
-                try dot.write(toFile: dotFilePath, atomically: true, encoding: .utf8)
-            }
-            let process = Process()
-            process.launchPath = "/usr/bin/env"
-            process.arguments = ["dot", "-Tpng", dotFilePath, "-o", "\(output).png"]
-            process.launch()
-            process.waitUntilExit()
-            print("Dependency graph created: \(output).png")
-            if createDot {
-                print("DOT file created: \(dotFilePath)")
+            try dot.write(toFile: dotFilePath, atomically: true, encoding: .utf8)
+            print("DOT file created: \(dotFilePath)")
+
+            if FileManager.default.fileExists(atPath: dotFilePath) {
+                print("DOT file successfully created at: \(dotFilePath)")
+
+                // Generate the PNG image using Graphviz
+                let process = Process()
+                process.launchPath = "/usr/bin/env"
+                process.arguments = ["dot", "-Tpng", dotFilePath, "-o", "\(output).png"]
+                process.launch()
+                process.waitUntilExit()
+                print("Dependency graph created: \(output).png")
+            } else {
+                print("Failed to create the DOT file.")
             }
         } catch {
             print("Error writing file or creating graph: \(error)")
@@ -67,11 +68,7 @@ struct GenerateDependencyGraph: ParsableCommand {
     }
 }
 
-/**
- Extracts remote and local dependencies from a Package.swift file.
- - Parameter filePath: The path to the Package.swift file.
- - Returns: A tuple containing an array of remote dependencies and an array of local dependencies.
- */
+// Extracts remote and local dependencies from a Package.swift file
 func extractDependencies(filePath: String) -> ([String], [(String, String)]) {
     do {
         let content = try String(contentsOfFile: filePath, encoding: .utf8)
